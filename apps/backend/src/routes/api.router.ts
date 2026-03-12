@@ -5,7 +5,6 @@ import { categoryRouter } from "../modules/category/category.route";
 import { orderRouter } from "../modules/order/order.route";
 import { productRouter } from "../modules/product/product.route";
 import { wishlistRouter } from "../modules/wishlist/wishlist.route";
-import { mediaRouter } from "../modules/media/media.route";
 
 export const apiRouter = Router();
 
@@ -19,4 +18,3 @@ apiRouter.use("/products", productRouter);
 apiRouter.use("/cart", cartRouter);
 apiRouter.use("/orders", orderRouter);
 apiRouter.use("/wishlist", wishlistRouter);
-apiRouter.use("/media", mediaRouter);

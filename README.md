@@ -74,21 +74,17 @@ JWT_SECRET=replace_with_a_long_random_string
 Optional frontend `.env`:
 
 ```env
-VITE_API_URL=http://127.0.0.1:4000/api
+VITE_API_URL=https://your-backend-domain.com/api
 ```
 
-## Database (Docker)
+## Frontend Deployment (Vercel)
 
-This repo includes a local Postgres `docker-compose.yml` that runs on port `5433`.
+Set `VITE_API_URL` in Vercel to your backend domain (include `/api`).
 
-- Start: `docker compose up -d`
-- Stop: `docker compose down`
-
-Example `DATABASE_URL` for local Docker:
+Example:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform?schema=public
-JWT_SECRET=replace_with_a_long_random_string
+VITE_API_URL=https://api.yourdomain.com/api
 ```
 
 ## Setup
