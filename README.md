@@ -71,6 +71,7 @@ Add screenshots to `docs/screenshots/` (PNG recommended) with these filenames, c
 - `docs/screenshots/checkout.png`
 - `docs/screenshots/wishlist.png`
 - `docs/screenshots/login.png`
+- `docs/screenshots/order-history.png`
 
 ![Homepage](docs/screenshots/homepage.png)
 ![Product search](docs/screenshots/product-search.png)
@@ -78,6 +79,7 @@ Add screenshots to `docs/screenshots/` (PNG recommended) with these filenames, c
 ![Checkout](docs/screenshots/checkout.png)
 ![Wishlist](docs/screenshots/wishlist.png)
 ![Login](docs/screenshots/login.png)
+![Order history](docs/screenshots/order-history.png)
 
 ## Environment
 
