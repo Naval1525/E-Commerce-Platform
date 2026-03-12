@@ -13,10 +13,12 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "prisma:seed-from-db": "tsx prisma/seed.from-db.ts",
     "prisma:export-seed": "tsx prisma/export-seed.ts",
-    "prisma:clear": "tsx prisma/clear-db.ts"
+    "prisma:clear": "tsx prisma/clear-db.ts",
+    "prisma:mirror-images": "tsx prisma/mirror-images-to-cloudinary.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
+    "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",

@@ -81,6 +81,28 @@ VITE_API_URL=http://127.0.0.1:4000/api
 VITE_API_URL=https://your-backend-domain.com/api
 ```
 
+## Fixing Flixcart Image Hotlinking (Vercel)
+
+Flixcart image URLs are often blocked over HTTPS (you'll see `403 Forbidden`), and Vercel sites run on HTTPS-only, so the browser won’t load them.
+
+Mirror the product images to Cloudinary once, then your UI will use the Cloudinary HTTPS URLs:
+
+Backend env:
+
+```env
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+Run:
+
+```bash
+DRY_RUN=1 npm run prisma:mirror-images --workspace backend
+# then:
+npm run prisma:mirror-images --workspace backend
+```
+
 ## Frontend Deployment (Vercel)
 
 Set `VITE_API_URL` in Vercel to your backend domain (include `/api`).
