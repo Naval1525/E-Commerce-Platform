@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { resolveImageUrl } from "../api/client";
 import type { ProductListItem } from "../api/types";
 import { formatCurrency } from "../lib/format";
 
@@ -44,7 +45,7 @@ export function ProductCard({
               className="max-h-full max-w-full object-contain object-center"
               decoding="async"
               loading="lazy"
-              src={product.image}
+              src={resolveImageUrl(product.image) ?? product.image}
               onError={(e) => {
                 e.currentTarget.style.display = "none";
                 const fallback = e.currentTarget.parentElement?.querySelector(".image-fallback");

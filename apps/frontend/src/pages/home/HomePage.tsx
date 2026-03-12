@@ -24,6 +24,7 @@ import {
   fetchProducts,
   fetchWishlist,
   getAuthToken,
+  resolveImageUrl,
   removeWishlistItem
 } from "../../shared/api/client";
 import { cn } from "../../lib/utils";
@@ -290,7 +291,7 @@ export function HomePage() {
                               className="max-h-full max-w-full object-contain object-center"
                               decoding="async"
                               loading="lazy"
-                              src={product.image}
+                              src={resolveImageUrl(product.image) ?? product.image}
                             />
                           ) : (
                             <div className="image-fallback h-full min-h-[60px] w-full" />
@@ -347,7 +348,7 @@ export function HomePage() {
                     className="max-h-full max-w-full object-contain object-center"
                     decoding="async"
                     loading="lazy"
-                    src={heroPromoProduct.image}
+                    src={resolveImageUrl(heroPromoProduct.image) ?? heroPromoProduct.image}
                   />
                 ) : (
                   <div className="image-fallback image-fallback--large h-full w-full" />
@@ -376,7 +377,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -408,7 +409,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -443,7 +444,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -478,7 +479,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -509,7 +510,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -540,7 +541,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />
@@ -568,7 +569,7 @@ export function HomePage() {
                           className="max-h-full max-w-full object-contain object-center"
                           decoding="async"
                           loading="lazy"
-                          src={product.image}
+                          src={resolveImageUrl(product.image) ?? product.image}
                         />
                       ) : (
                         <div className="image-fallback" />

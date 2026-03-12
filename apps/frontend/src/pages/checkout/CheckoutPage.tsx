@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { checkout, fetchCart } from "../../shared/api/client";
+import { checkout, fetchCart, resolveImageUrl } from "../../shared/api/client";
 import { CartSummaryCard } from "../../shared/components/CartSummaryCard";
 import { DeliveryAddressEditor } from "../../shared/components/DeliveryAddressEditor";
 import { StatusView } from "../../shared/components/StatusView";
@@ -89,7 +89,7 @@ export function CheckoutPage() {
                       <img
                         alt={item.product.name}
                         className="max-h-full max-w-full object-contain object-center"
-                        src={item.product.image}
+                        src={resolveImageUrl(item.product.image) ?? item.product.image}
                       />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-[#e0e0e0]" />

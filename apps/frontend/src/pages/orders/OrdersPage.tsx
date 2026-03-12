@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Search, Star } from "lucide-react";
-import { fetchOrders } from "../../shared/api/client";
+import { fetchOrders, resolveImageUrl } from "../../shared/api/client";
 import { StatusView } from "../../shared/components/StatusView";
 import { formatCurrency, formatDateOnly } from "../../shared/lib/format";
 
@@ -249,7 +249,7 @@ export function OrdersPage() {
                             {item.product.image ? (
                               <img
                                 alt={item.product.name}
-                                src={item.product.image}
+                                src={resolveImageUrl(item.product.image) ?? item.product.image}
                                 className="h-full w-full object-contain p-1"
                               />
                             ) : (

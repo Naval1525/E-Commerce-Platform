@@ -9,6 +9,7 @@ import {
   fetchProducts,
   fetchWishlist,
   getAuthToken,
+  resolveImageUrl,
   removeWishlistItem
 } from "../../shared/api/client";
 import { ProductCard } from "../../shared/components/ProductCard";
@@ -154,7 +155,11 @@ export function ProductDetailPage() {
                     className="grid min-h-[240px] place-items-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50 p-3 sm:min-h-[280px]"
                     key={`${url}-${index}`}
                   >
-                    <img alt={`${product.name} ${index + 1}`} className="max-h-full max-w-full object-contain" src={url} />
+                    <img
+                      alt={`${product.name} ${index + 1}`}
+                      className="max-h-full max-w-full object-contain"
+                      src={resolveImageUrl(url) ?? url}
+                    />
                   </div>
                 ))
               ) : (

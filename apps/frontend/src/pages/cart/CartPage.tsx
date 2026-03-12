@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchCart, removeCartItem, updateCartItem } from "../../shared/api/client";
+import { fetchCart, removeCartItem, resolveImageUrl, updateCartItem } from "../../shared/api/client";
 import type { Cart } from "../../shared/api/types";
 import { CartSummaryCard } from "../../shared/components/CartSummaryCard";
 import { DeliveryAddressEditor } from "../../shared/components/DeliveryAddressEditor";
@@ -181,7 +181,7 @@ export function CartPage() {
                         <img
                           alt={item.product.name}
                           className="max-h-full max-w-full object-contain object-center"
-                          src={item.product.image}
+                          src={resolveImageUrl(item.product.image) ?? item.product.image}
                         />
                       ) : (
                         <div className="h-24 w-24 rounded-full bg-[#f1f3f6]" />

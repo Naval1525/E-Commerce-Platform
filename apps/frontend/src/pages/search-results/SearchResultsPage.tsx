@@ -9,6 +9,7 @@ import {
   fetchProducts,
   fetchWishlist,
   getAuthToken,
+  resolveImageUrl,
   removeWishlistItem
 } from "../../shared/api/client";
 import { StatusView } from "../../shared/components/StatusView";
@@ -197,7 +198,7 @@ export function SearchResultsPage() {
                       <img
                         alt={product.name}
                         className="max-h-full max-w-full object-contain object-center"
-                        src={product.image}
+                        src={resolveImageUrl(product.image) ?? product.image}
                       />
                     ) : (
                       <div className="h-40 w-40 rounded-full bg-[#f1f3f6]" />

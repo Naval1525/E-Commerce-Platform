@@ -113,6 +113,13 @@ Example:
 VITE_API_URL=https://api.yourdomain.com/api
 ```
 
+## Images on Vercel (Flixcart dataset)
+
+Flixcart image URLs are often blocked over HTTPS and Vercel is HTTPS-only. Use the backend image proxy endpoint:
+
+- Product image URLs returned by the API can be rendered via `GET /api/media?url=<originalUrl>`.
+- The frontend automatically proxies any `.flixcart.com` image URL when `VITE_API_URL` is set.
+
 ## Setup
 
 1. Install dependencies:

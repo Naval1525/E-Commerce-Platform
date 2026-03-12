@@ -15,7 +15,7 @@ const TOKEN_STORAGE_KEY = "flipkart-clone-token";
 // Requests always go to "<API_BASE><API_PREFIX>/...".
 // - If VITE_API_URL ends with "/api", we won't add another "/api" (prevents "/api/api").
 // - If VITE_API_URL is a bare origin (e.g. "https://api.example.com"), we will prefix "/api".
-const API_BASE = (import.meta.env.VITE_API_URL ?? "").trim() || "";
+const API_BASE = ((import.meta.env.VITE_API_URL ?? "").trim() || "").replace(/\/+$/, "");
 const API_PREFIX = API_BASE.endsWith("/api") || API_BASE === "/api" ? "" : "/api";
 const api = axios.create({
   baseURL: API_BASE,
@@ -24,6 +24,22 @@ const apiPath = (path: string) => {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return `${API_PREFIX}${normalized}`;
 };
+
+export function resolveImageUrl(rawUrl: string | null | undefined) {
+  const url = (rawUrl ?? "").trim();
+  if (!url) return null;
+
+  if (url.includes(".flixcart.com/")) {
+    if (!API_BASE) {
+      // Without an API base, we can't build an absolute proxy URL.
+      return url;
+    }
+    const endpoint = `${API_BASE}${apiPath("media")}`;
+    return `${endpoint}?url=${encodeURIComponent(url)}`;
+  }
+
+  return url;
+}
 function toError(error: unknown) {
   if (axios.isAxiosError(error)) {
     const message =

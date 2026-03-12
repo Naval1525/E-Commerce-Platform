@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreditCard, FolderOpen, Heart, LogOut, ShieldCheck, Trash2, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { addCartItem, clearAuthToken, fetchMe, fetchWishlist, getAuthToken, removeWishlistItem } from "../../shared/api/client";
+import { addCartItem, clearAuthToken, fetchMe, fetchWishlist, getAuthToken, removeWishlistItem, resolveImageUrl } from "../../shared/api/client";
 import { StatusView } from "../../shared/components/StatusView";
 import { formatCurrency } from "../../shared/lib/format";
 
@@ -161,7 +161,7 @@ export function WishlistPage() {
                     <img
                       alt={product.name}
                       className="h-full w-full object-contain p-2"
-                      src={product.image}
+                      src={resolveImageUrl(product.image) ?? product.image}
                     />
                   ) : (
                     <div className="image-fallback h-full w-full" />
