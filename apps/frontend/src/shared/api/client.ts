@@ -12,13 +12,19 @@ import type {
 
 const TOKEN_STORAGE_KEY = "flipkart-clone-token";
 
-// Always request /api/... so same-origin hits the proxy (e.g. Vercel → backend). Same as fetch("/api/products").
-// When VITE_API_URL is set (e.g. local dev), requests go to that origin + path.
+// Requests always go to "<API_BASE><API_PREFIX>/...".
+// - On Vercel, keep VITE_API_URL empty and use rewrites for /api/* to your VM.
+// - If VITE_API_URL ends with "/api", we won't add another "/api" (prevents "/api/api").
+// - If VITE_API_URL is a bare origin (e.g. "http://1.2.3.4:4000"), we will prefix "/api".
 const API_BASE = (import.meta.env.VITE_API_URL ?? "").trim() || "";
+const API_PREFIX = API_BASE.endsWith("/api") || API_BASE === "/api" ? "" : "/api";
 const api = axios.create({
   baseURL: API_BASE,
 });
-const apiPath = (path: string) => (path.startsWith("/") ? path : `/${path}`).replace(/^\/?/, "/api/");
+const apiPath = (path: string) => {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${API_PREFIX}${normalized}`;
+};
 
 function toError(error: unknown) {
   if (axios.isAxiosError(error)) {
