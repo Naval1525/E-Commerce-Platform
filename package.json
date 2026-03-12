@@ -1,0 +1,27 @@
+{
+  "name": "ecommerce-platform",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --workspace frontend",
+    "dev:backend": "npm run dev --workspace backend",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "npm run format --workspaces",
+    "prisma:generate": "npm run prisma:generate --workspace backend",
+    "prisma:migrate": "npm run prisma:migrate --workspace backend",
+    "prisma:seed": "npm run prisma:seed --workspace backend",
+    "prisma:clear": "npm run prisma:clear --workspace backend"
+  },
+  "devDependencies": {
+    "@typescript-eslint/utils": "^8.57.0",
+    "@typescript-eslint/tsconfig-utils": "^8.57.0",
+    "concurrently": "^9.1.2",
+    "vite": "^6.4.1"
+  }
+}
