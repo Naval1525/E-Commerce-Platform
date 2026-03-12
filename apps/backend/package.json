@@ -11,6 +11,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed-from-db": "tsx prisma/seed.from-db.ts",
     "prisma:export-seed": "tsx prisma/export-seed.ts",
     "prisma:clear": "tsx prisma/clear-db.ts"
   },
@@ -20,18 +21,19 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "jose": "^6.2.1",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@prisma/config": "^6.4.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.10",
     "eslint": "^9.22.0",
     "globals": "^16.0.0",
-    "@prisma/config": "^6.4.1",
     "prettier": "^3.5.3",
     "prisma": "^6.4.1",
     "tsx": "^4.19.3",

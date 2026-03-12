@@ -8,23 +8,10 @@ export async function findUserByEmail(email: string) {
   });
 }
 
-export async function findSessionWithUser(token: string) {
-  return prisma.session.findUnique({
-    where: {
-      token
-    },
-    include: {
-      user: true
-    }
-  });
-}
-
-export async function createUserWithSession(input: {
+export async function createUserWithCartWishlist(input: {
   name: string;
   email: string;
   passwordHash: string;
-  token: string;
-  expiresAt: Date;
 }) {
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
@@ -48,24 +35,6 @@ export async function createUserWithSession(input: {
       }
     });
 
-    const session = await tx.session.create({
-      data: {
-        userId: user.id,
-        token: input.token,
-        expiresAt: input.expiresAt
-      }
-    });
-
-    return { user, session };
-  });
-}
-
-export async function createSession(userId: string, token: string, expiresAt: Date) {
-  return prisma.session.create({
-    data: {
-      userId,
-      token,
-      expiresAt
-    }
+    return user;
   });
 }

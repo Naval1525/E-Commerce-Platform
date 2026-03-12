@@ -68,6 +68,7 @@ Backend `.env`:
 ```env
 PORT=4000
 DATABASE_URL=your_neon_postgres_connection_string
+JWT_SECRET=replace_with_a_long_random_string
 ```
 
 Optional frontend `.env`:
@@ -87,6 +88,7 @@ Example `DATABASE_URL` for local Docker:
 
 ```env
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform?schema=public
+JWT_SECRET=replace_with_a_long_random_string
 ```
 
 ## Setup
