@@ -61,6 +61,24 @@ npm run dev
 - `apps/backend` Express API and Prisma schema
 - `packages/shared` shared package scaffold
 
+## Screenshots
+
+Add screenshots to `docs/screenshots/` (PNG recommended) with these filenames, commit them, and they will render here on GitHub:
+
+- `docs/screenshots/homepage.png`
+- `docs/screenshots/product-search.png`
+- `docs/screenshots/product-detail.png`
+- `docs/screenshots/checkout.png`
+- `docs/screenshots/wishlist.png`
+- `docs/screenshots/login.png`
+
+![Homepage](docs/screenshots/homepage.png)
+![Product search](docs/screenshots/product-search.png)
+![Product detail](docs/screenshots/product-detail.png)
+![Checkout](docs/screenshots/checkout.png)
+![Wishlist](docs/screenshots/wishlist.png)
+![Login](docs/screenshots/login.png)
+
 ## Environment
 
 Backend `.env`:
