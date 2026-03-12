@@ -19,6 +19,12 @@ yarn-error.log*
 pnpm-debug.log*
 *.log
 
+## editor / tooling artifacts
+*.swp
+*.swo
+*.swx
+*.tsbuildinfo
+
 ## OS
 .DS_Store
 Thumbs.db
