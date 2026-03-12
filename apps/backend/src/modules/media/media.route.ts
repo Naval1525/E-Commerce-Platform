@@ -56,8 +56,10 @@ mediaRouter.get("/", async (req, res) => {
   res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", cacheControl);
   res.setHeader("X-Content-Type-Options", "nosniff");
+  // Allow the frontend origin (Vercel) to embed these images.
+  // Helmet defaults to Cross-Origin-Resource-Policy: same-origin, which blocks <img> on another origin.
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
 
   const arrayBuffer = await upstream.arrayBuffer();
   res.status(200).send(Buffer.from(arrayBuffer));
 });
-
