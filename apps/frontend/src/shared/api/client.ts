@@ -25,6 +25,73 @@ const apiPath = (path: string) => {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return `${API_PREFIX}${normalized}`;
 };
+const apiHref = (path: string) => {
+  const base = API_BASE.trim();
+  return base ? `${base}${apiPath(path)}` : apiPath(path);
+};
+
+function isFlixcartCdnUrl(url: string) {
+  return /^https?:\/\/img[56]a\.flixcart\.com\//i.test(url);
+}
+
+function toProxiedImageUrl(url: string | null) {
+  if (!url) return null;
+  if (!isFlixcartCdnUrl(url)) return url;
+  return `${apiHref("media")}?url=${encodeURIComponent(url)}`;
+}
+
+function mapProductListItemImages(item: ProductListItem): ProductListItem {
+  return { ...item, image: toProxiedImageUrl(item.image) };
+}
+
+function mapCartImages(cart: Cart): Cart {
+  return {
+    ...cart,
+    items: cart.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        image: toProxiedImageUrl(item.product.image)
+      }
+    }))
+  };
+}
+
+function mapWishlistImages(wishlist: Wishlist): Wishlist {
+  return {
+    ...wishlist,
+    items: wishlist.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        image: toProxiedImageUrl(item.product.image)
+      }
+    }))
+  };
+}
+
+function mapOrderImages(order: Order): Order {
+  return {
+    ...order,
+    items: order.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        image: toProxiedImageUrl(item.product.image)
+      }
+    }))
+  };
+}
+
+function mapProductDetailImages(product: ProductDetail): ProductDetail {
+  return {
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: toProxiedImageUrl(image.url) ?? image.url
+    }))
+  };
+}
 
 function toError(error: unknown) {
   if (axios.isAxiosError(error)) {
@@ -103,17 +170,20 @@ export async function fetchProducts(params: { search?: string; category?: string
   const response = await api.get<PaginatedProducts>(apiPath("products"), {
     params
   });
-  return response.data;
+  return {
+    ...response.data,
+    data: response.data.data.map(mapProductListItemImages)
+  };
 }
 
 export async function fetchProduct(slugOrId: string) {
   const response = await api.get<{ data: ProductDetail }>(apiPath(`products/${slugOrId}`));
-  return response.data.data;
+  return mapProductDetailImages(response.data.data);
 }
 
 export async function fetchCart() {
   const response = await api.get<{ data: Cart }>(apiPath("cart"));
-  return response.data.data;
+  return mapCartImages(response.data.data);
 }
 
 export async function addCartItem(payload: { productId: string; quantity: number }) {
@@ -145,7 +215,7 @@ export async function removeCartItem(itemId: string) {
 
 export async function fetchWishlist() {
   const response = await api.get<{ data: Wishlist }>(apiPath("wishlist"));
-  return response.data.data;
+  return mapWishlistImages(response.data.data);
 }
 
 export async function addWishlistItem(productId: string) {
@@ -160,12 +230,12 @@ export async function removeWishlistItem(productId: string) {
 
 export async function fetchOrders() {
   const response = await api.get<{ data: Order[] }>(apiPath("orders"));
-  return response.data.data;
+  return response.data.data.map(mapOrderImages);
 }
 
 export async function fetchOrder(orderId: string) {
   const response = await api.get<{ data: Order }>(apiPath(`orders/${orderId}`));
-  return response.data.data;
+  return mapOrderImages(response.data.data);
 }
 
 export async function checkout(payload: {
