@@ -2,6 +2,41 @@
 
 Flipkart-inspired e-commerce platform built with React, Express, TypeScript, Prisma, and PostgreSQL.
 
+## Quick Start (Local)
+
+1. Install deps:
+
+```bash
+npm install
+```
+
+2. Start Postgres (optional, for local DB):
+
+```bash
+docker compose up -d
+```
+
+3. Create `apps/backend/.env`:
+
+```env
+PORT=4000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform?schema=public
+```
+
+4. Migrate + seed:
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate
+SEED_CSV_PATH="/Users/naval/Downloads/flipkart_com-ecommerce_sample.csv" SEED_LIMIT=250 npm run prisma:seed
+```
+
+5. Start apps:
+
+```bash
+npm run dev
+```
+
 ## Implemented Scope
 
 - Product listing with search and category filters
@@ -41,6 +76,19 @@ Optional frontend `.env`:
 VITE_API_URL=http://127.0.0.1:4000/api
 ```
 
+## Database (Docker)
+
+This repo includes a local Postgres `docker-compose.yml` that runs on port `5433`.
+
+- Start: `docker compose up -d`
+- Stop: `docker compose down`
+
+Example `DATABASE_URL` for local Docker:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform?schema=public
+```
+
 ## Setup
 
 1. Install dependencies:
@@ -60,13 +108,13 @@ npm run prisma:generate
 4. Apply migrations:
 
 ```bash
-npm exec --workspace backend prisma migrate dev -- --name init
+npm run prisma:migrate
 ```
 
-5. Seed demo data:
+5. Seed data (from Flipkart CSV):
 
 ```bash
-npm run prisma:seed
+SEED_CSV_PATH="/Users/naval/Downloads/flipkart_com-ecommerce_sample.csv" SEED_LIMIT=250 npm run prisma:seed
 ```
 
 6. Start the apps:
@@ -75,6 +123,13 @@ npm run prisma:seed
 npm run dev:backend
 npm run dev:frontend
 ```
+
+## Seeding Notes
+
+- The seed script clears existing rows in the main tables before inserting.
+- Product images come from the CSV `image` column (no Unsplash).
+- The dataset does not include inventory, so seed uses a consistent default stock quantity per product.
+- A small set of known-unwanted product names are excluded during seeding (see `apps/backend/prisma/seed.ts`).
 
 ## Verification
 
