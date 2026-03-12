@@ -371,6 +371,14 @@ async function loadProductsFromCsv(csvPath: string, limit: number): Promise<Seed
   return products;
 }
 
+async function loadProductsFromSnapshot(limit: number): Promise<SeedProduct[]> {
+  const snapshot = await import("./seed.from-db");
+  const snapshotProducts = (snapshot.productSeeds as SeedProduct[]).filter(
+    (product) => product.name && !isExcludedProductName(product.name)
+  );
+  return limit > 0 ? snapshotProducts.slice(0, limit) : snapshotProducts;
+}
+
 async function main() {
   await prisma.orderItem.deleteMany();
   await prisma.emailNotification.deleteMany();
@@ -406,11 +414,15 @@ async function main() {
 
   const seedCsvPath = process.env.SEED_CSV_PATH ?? "/Users/naval/Downloads/flipkart_com-ecommerce_sample.csv";
   const seedLimit = Number.parseInt(process.env.SEED_LIMIT ?? "250", 10);
+  const resolvedLimit = Number.isFinite(seedLimit) ? seedLimit : 250;
 
-  const productsToSeed = await loadProductsFromCsv(
-    seedCsvPath,
-    Number.isFinite(seedLimit) ? seedLimit : 250
-  );
+  let productsToSeed: SeedProduct[];
+  try {
+    await fs.stat(seedCsvPath);
+    productsToSeed = await loadProductsFromCsv(seedCsvPath, resolvedLimit);
+  } catch {
+    productsToSeed = await loadProductsFromSnapshot(resolvedLimit);
+  }
 
   for (const product of productsToSeed) {
     const createdProduct = await prisma.product.create({

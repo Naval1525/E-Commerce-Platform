@@ -128,6 +128,18 @@ Flixcart image URLs are often blocked over HTTPS and Vercel is HTTPS-only. Use t
 npm install
 ```
 
+## Docker (one command)
+
+Spin everything up (Postgres + API + Frontend):
+
+```bash
+docker compose up --build
+```
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:4000/health`
+- Postgres: `localhost:5433` (mapped from container 5432)
+
 2. Add your backend environment file at `apps/backend/.env`
 
 3. Generate Prisma client:
