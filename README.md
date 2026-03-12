@@ -74,6 +74,10 @@ JWT_SECRET=replace_with_a_long_random_string
 Optional frontend `.env`:
 
 ```env
+# Local development:
+VITE_API_URL=http://127.0.0.1:4000/api
+
+# Production:
 VITE_API_URL=https://your-backend-domain.com/api
 ```
 
