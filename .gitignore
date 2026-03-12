@@ -1,0 +1,28 @@
+## dependencies
+node_modules/
+
+## builds
+dist/
+build/
+.next/
+.turbo/
+coverage/
+
+## env / secrets
+.env
+.env.*
+
+## logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+## OS
+.DS_Store
+Thumbs.db
+
+## local notes (do not commit)
+plan.md
+prd.md
