@@ -155,8 +155,7 @@ export async function createOrderFromCart(
         userId,
         orderId: order.id,
         notificationType: "ORDER_CONFIRMATION",
-        status: "SENT",
-        sentAt: new Date()
+        status: "PENDING"
       }
     });
 
@@ -186,5 +185,24 @@ export async function createOrderFromCart(
       id: createdOrderId
     },
     include: orderInclude
+  });
+}
+
+export async function updateOrderConfirmationNotification(input: {
+  userId: string;
+  orderId: string;
+  status: "SENT" | "FAILED";
+  sentAt?: Date | null;
+}) {
+  await prisma.emailNotification.updateMany({
+    where: {
+      userId: input.userId,
+      orderId: input.orderId,
+      notificationType: "ORDER_CONFIRMATION"
+    },
+    data: {
+      status: input.status,
+      sentAt: input.sentAt ?? null
+    }
   });
 }

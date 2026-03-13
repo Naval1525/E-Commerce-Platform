@@ -1,6 +1,7 @@
 import { AppError } from "../../shared/http";
 import { hashPassword, signAuthToken, verifyPassword } from "../../shared/auth";
 import { createUserWithCartWishlist, findUserByEmail } from "./auth.repository";
+import { sendLoginEmail, sendSignupEmail } from "../../shared/mailer";
 
 export async function signup(input: { name: string; email: string; password: string }) {
   const existingUser = await findUserByEmail(input.email);
@@ -18,6 +19,15 @@ export async function signup(input: { name: string; email: string; password: str
   });
 
   const token = await signAuthToken(user);
+
+  try {
+    const result = await sendSignupEmail({ name: user.name, email: user.email });
+    if (result.skipped) {
+      console.warn("Signup email skipped (MAIL disabled).");
+    }
+  } catch (error) {
+    console.error("Signup email failed:", error);
+  }
 
   return {
     token,
@@ -37,6 +47,15 @@ export async function login(input: { email: string; password: string }) {
   }
 
   const token = await signAuthToken(user);
+
+  try {
+    const result = await sendLoginEmail({ name: user.name, email: user.email });
+    if (result.skipped) {
+      console.warn("Login email skipped (MAIL disabled).");
+    }
+  } catch (error) {
+    console.error("Login email failed:", error);
+  }
 
   return {
     token,
