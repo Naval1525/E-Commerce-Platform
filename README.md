@@ -1,41 +1,6 @@
 # E-Commerce Platform
 
-Flipkart-inspired e-commerce platform built with React, Express, TypeScript, Prisma, and PostgreSQL.
-
-## Quick Start (Local)
-
-1. Install deps:
-
-```bash
-npm install
-```
-
-2. Start Postgres (optional, for local DB):
-
-```bash
-docker compose up -d
-```
-
-3. Create `apps/backend/.env`:
-
-```env
-PORT=4000
-DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform?schema=public
-```
-
-4. Migrate + seed:
-
-```bash
-npm run prisma:generate
-npm run prisma:migrate
-SEED_CSV_PATH="/Users/naval/Downloads/flipkart_com-ecommerce_sample.csv" SEED_LIMIT=250 npm run prisma:seed
-```
-
-5. Start apps:
-
-```bash
-npm run dev
-```
+Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScript, Prisma, and PostgreSQL.
 
 ## Implemented Scope
 
@@ -49,11 +14,17 @@ npm run dev
 - Signup, login, and authenticated user sessions
 - Simulated email notification records on order placement
 
+## How It Works (High Level)
+
+- **Frontend** (`apps/frontend`): React UI + routing, calls the backend REST API.
+- **Backend** (`apps/backend`): Express API + Prisma ORM.
+- **Database**: PostgreSQL (local via Docker Compose).
+
 ## Tech Stack
 
 - Frontend: React, Vite, TypeScript, React Router, TanStack Query, React Hook Form
 - Backend: Express, TypeScript, Prisma
-- Database: PostgreSQL (Neon)
+- Database: PostgreSQL
 
 ## Project Structure
 
@@ -63,16 +34,6 @@ npm run dev
 
 ## Screenshots
 
-Add screenshots to `docs/screenshots/` (PNG recommended) with these filenames, commit them, and they will render here on GitHub:
-
-- `docs/screenshots/homepage.png`
-- `docs/screenshots/product-search.png`
-- `docs/screenshots/product-detail.png`
-- `docs/screenshots/checkout.png`
-- `docs/screenshots/wishlist.png`
-- `docs/screenshots/login.png`
-- `docs/screenshots/order-history.png`
-
 ![Homepage](docs/screenshots/homepage.png)
 ![Product search](docs/screenshots/product-search.png)
 ![Product detail](docs/screenshots/product-detail.png)
@@ -81,66 +42,26 @@ Add screenshots to `docs/screenshots/` (PNG recommended) with these filenames, c
 ![Login](docs/screenshots/login.png)
 ![Order history](docs/screenshots/order-history.png)
 
-## Environment
+## Setup & Run
 
-Backend `.env`:
+### Option A: Docker (recommended for evaluation)
 
-```env
-PORT=4000
-DATABASE_URL=your_neon_postgres_connection_string
-JWT_SECRET=replace_with_a_long_random_string
-```
-
-Optional frontend `.env`:
-
-```env
-# Local development:
-VITE_API_URL=http://127.0.0.1:4000/api
-
-# Production:
-VITE_API_URL=https://your-backend-domain.com/api
-```
-
-## Fixing Flixcart Image Hotlinking (Vercel)
-
-Flixcart image URLs are often blocked over HTTPS (you'll see `403 Forbidden`), and Vercel sites run on HTTPS-only, so the browser won’t load them.
-
-Mirror the product images to Cloudinary once, then your UI will use the Cloudinary HTTPS URLs:
-
-Backend env:
-
-```env
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-```
-
-Run:
+Spins up **Postgres + Backend + Frontend**:
 
 ```bash
-DRY_RUN=1 npm run prisma:mirror-images --workspace backend
-# then:
-npm run prisma:mirror-images --workspace backend
+docker compose up --build
 ```
 
-## Frontend Deployment (Vercel)
+- Frontend: `http://localhost:3000`
+- Backend health: `http://localhost:4000/health`
+- Postgres: `localhost:5433` (mapped from container `5432`)
 
-Set `VITE_API_URL` in Vercel to your backend domain (include `/api`).
+Note: Docker seeds the database on first start (default limit: `250` products).
+Open the app at `http://localhost:3000` and create an account using **Signup**.
 
-Example:
+### Option B: Local Development (Node + Docker Postgres)
 
-```env
-VITE_API_URL=https://api.yourdomain.com/api
-```
-
-## Images on Vercel (Flixcart dataset)
-
-Flixcart image URLs are often blocked over HTTPS and Vercel is HTTPS-only. Use the backend image proxy endpoint:
-
-- Product image URLs returned by the API can be rendered via `GET /api/media?url=<originalUrl>`.
-- The frontend automatically proxies any `.flixcart.com` image URL when `VITE_API_URL` is set.
-
-## Setup
+Prerequisites: Node.js (LTS) + Docker.
 
 1. Install dependencies:
 
@@ -148,65 +69,69 @@ Flixcart image URLs are often blocked over HTTPS and Vercel is HTTPS-only. Use t
 npm install
 ```
 
-## Docker (one command)
-
-Spin everything up (Postgres + API + Frontend):
+2. Start Postgres:
 
 ```bash
-docker compose up --build
+docker compose up -d postgres
 ```
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:4000/health`
-- Postgres: `localhost:5433` (mapped from container 5432)
+3. Configure environment:
 
-2. Add your backend environment file at `apps/backend/.env`
+```bash
+cp apps/backend/.env.example apps/backend/.env
+cp apps/frontend/.env.example apps/frontend/.env
+```
 
-3. Generate Prisma client:
+4. Create tables + seed sample data:
 
 ```bash
 npm run prisma:generate
-```
-
-4. Apply migrations:
-
-```bash
 npm run prisma:migrate
+npm run prisma:seed
 ```
 
-5. Seed data (from Flipkart CSV):
+Optional (seed from a Flipkart CSV dataset):
 
 ```bash
-SEED_CSV_PATH="/Users/naval/Downloads/flipkart_com-ecommerce_sample.csv" SEED_LIMIT=250 npm run prisma:seed
+SEED_CSV_PATH="/absolute/path/to/flipkart_com-ecommerce_sample.csv" SEED_LIMIT=250 npm run prisma:seed
 ```
 
-6. Start the apps:
+5. Start the apps:
 
 ```bash
-npm run dev:backend
-npm run dev:frontend
+npm run dev
+```
+
+Open the app at `http://localhost:5173` and create an account using **Signup**.
+
+## Useful Commands
+
+- `npm run lint` — lint all workspaces
+- `npm run build` — build all workspaces
+- `npm run prisma:clear` — clear DB tables (backend)
+
+## Environment
+
+Backend (`apps/backend/.env`):
+
+```env
+PORT=4000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform
+JWT_SECRET=replace_with_a_long_random_string
+```
+
+Frontend (`apps/frontend/.env`):
+
+```env
+VITE_API_URL=http://127.0.0.1:4000/api
 ```
 
 ## Seeding Notes
 
 - The seed script clears existing rows in the main tables before inserting.
-- Product images come from the CSV `image` column (no Unsplash).
+- If `SEED_CSV_PATH` is not found, the seed falls back to an included snapshot dataset.
 - The dataset does not include inventory, so seed uses a consistent default stock quantity per product.
 - A small set of known-unwanted product names are excluded during seeding (see `apps/backend/prisma/seed.ts`).
-
-## Verification
-
-Verified during implementation:
-
-- backend build passed
-- backend lint passed
-- frontend build passed
-- frontend lint passed
-- Prisma migration applied successfully to Neon
-- Prisma seed completed successfully
-- live API checks passed for catalog, cart, wishlist, checkout, order history, and order detail
-- live auth checks passed for signup, login, me, protected cart, and protected checkout
-- frontend dev server starts successfully
 
 ## Assumptions
 

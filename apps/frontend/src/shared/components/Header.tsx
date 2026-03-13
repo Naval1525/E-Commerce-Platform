@@ -1,9 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ChevronDown,
   Headset,
   Heart,
-  LogIn,
   LogOut,
   Package2,
   Search,
@@ -35,12 +34,36 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const [loginMenuOpen, setLoginMenuOpen] = useState(false);
+  const loginMenuCloseTimer = useRef<number | null>(null);
   const hasToken = Boolean(getAuthToken());
   const cartItemCount = cart?.summary.itemCount ?? 0;
 
   useEffect(() => {
     setSearch(searchParams.get("search") ?? "");
   }, [searchParams]);
+
+  useEffect(() => {
+    return () => {
+      if (loginMenuCloseTimer.current) {
+        window.clearTimeout(loginMenuCloseTimer.current);
+      }
+    };
+  }, []);
+
+  function scheduleLoginMenuClose() {
+    if (loginMenuCloseTimer.current) {
+      window.clearTimeout(loginMenuCloseTimer.current);
+    }
+    loginMenuCloseTimer.current = window.setTimeout(() => setLoginMenuOpen(false), 120);
+  }
+
+  function cancelLoginMenuClose() {
+    if (loginMenuCloseTimer.current) {
+      window.clearTimeout(loginMenuCloseTimer.current);
+      loginMenuCloseTimer.current = null;
+    }
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,7 +103,7 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
 
         <nav className="flex items-center gap-2 max-md:overflow-x-auto max-md:pb-1">
           {hasToken && user ? (
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button className="min-h-10 gap-2 text-[15px] font-medium text-slate-900" variant="ghost">
                   <UserCircle2 size={20} />
@@ -119,10 +142,62 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button className="min-h-10 gap-2 text-[15px] font-medium text-slate-900" variant="ghost" onClick={() => navigate("/login")}>
-              <LogIn size={18} />
-              Login
-            </Button>
+            <DropdownMenu modal={false} open={loginMenuOpen} onOpenChange={setLoginMenuOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="min-h-10 gap-2 rounded-none text-[15px] font-medium text-slate-900"
+                  variant="ghost"
+                  onClick={() => navigate("/login")}
+                  onMouseEnter={() => {
+                    cancelLoginMenuClose();
+                    setLoginMenuOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    scheduleLoginMenuClose();
+                  }}
+                  onFocus={() => {
+                    cancelLoginMenuClose();
+                    setLoginMenuOpen(true);
+                  }}
+                  onBlur={() => {
+                    scheduleLoginMenuClose();
+                  }}
+                >
+                  <UserCircle2 size={20} />
+                  <span>Login</span>
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="min-w-[140px] border-0 bg-transparent p-0 shadow-none"
+                onMouseEnter={() => {
+                  cancelLoginMenuClose();
+                  setLoginMenuOpen(true);
+                }}
+                onMouseLeave={() => {
+                  scheduleLoginMenuClose();
+                }}
+                onFocusCapture={() => {
+                  cancelLoginMenuClose();
+                  setLoginMenuOpen(true);
+                }}
+                onBlurCapture={() => {
+                  scheduleLoginMenuClose();
+                }}
+              >
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -top-2 left-1/2 h-0 w-0 -translate-x-1/2 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-brand-blue"
+                />
+                <DropdownMenuItem
+                  className="w-full justify-center rounded-none bg-brand-blue px-4 py-3 text-[15px] font-semibold text-white hover:bg-blue-700 focus:bg-blue-700"
+                  onSelect={() => navigate("/login")}
+                >
+                  Login
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           <DropdownMenu>

@@ -14,6 +14,7 @@
     "prisma:seed-from-db": "tsx prisma/seed.from-db.ts",
     "prisma:export-seed": "tsx prisma/export-seed.ts",
     "prisma:clear": "tsx prisma/clear-db.ts",
+    "prisma:remove-banned-products": "tsx prisma/remove-banned-products.ts",
     "prisma:mirror-images": "tsx prisma/mirror-images-to-cloudinary.ts"
   },
   "dependencies": {

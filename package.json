@@ -17,6 +17,7 @@
     "prisma:migrate": "npm run prisma:migrate --workspace backend",
     "prisma:seed": "npm run prisma:seed --workspace backend",
     "prisma:seed-from-db": "npm run prisma:seed-from-db --workspace backend",
+    "prisma:remove-banned-products": "npm run prisma:remove-banned-products --workspace backend",
     "prisma:clear": "npm run prisma:clear --workspace backend"
   },
   "devDependencies": {

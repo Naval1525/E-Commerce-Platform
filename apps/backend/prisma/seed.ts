@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import fs from "node:fs/promises";
 
@@ -34,7 +35,22 @@ const excludedProductNameFragments = [
   "felix analog watch",
   "frank bella anlog watch",
   "jack klien",
-  "kool kidz watch"
+  "kool kidz watch",
+  "skmei dg0939 red sports digital watch",
+  "felix 3541 w s metal analog watch",
+  "franck bella fb127a analog watch",
+  "d signer 688rgm brn analog watch",
+  "positif pfbk612 analog watch",
+  "disney msfr190 01b analog watch",
+  "now sp ethnic analog watch",
+  "skmei ad1057 dark orange sports analog digital watch",
+  "skmei 1070blk sports analog digital watch",
+  "q q lla2 213 digital watch",
+  "swag 670038 analog watch",
+  "skmei ad1031 black formal analog digital watch",
+  "wrangler skanders fit men s jeans",
+  "wrangler regular fit men s jeans",
+  "vizion 8503b 1red cold light digital watch"
 ].map((value) => normalizeName(value));
 
 function isExcludedProductName(name: string) {

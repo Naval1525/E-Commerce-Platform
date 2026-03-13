@@ -8,7 +8,7 @@ import {
   Cpu,
   Dumbbell,
   HeartPulse,
-  House,
+  Lamp,
   Microwave,
   Shirt,
   Smartphone,
@@ -38,7 +38,7 @@ const categoryIcons: Record<string, typeof Smartphone> = {
   mobiles: Smartphone,
   beauty: SprayCan,
   electronics: Cpu,
-  home: House,
+  home: Lamp,
   appliances: Tv,
   "toys-baby": Baby,
   "food-health": HeartPulse,
@@ -66,6 +66,10 @@ const spotlightThemeClasses = {
   amber: "bg-[linear-gradient(135deg,#fff2cc,#ffffff)]",
   violet: "bg-[linear-gradient(135deg,#ede9fe,#ffffff)]"
 } as const;
+
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -136,9 +140,20 @@ export function HomePage() {
     setSearchParams(params);
   }
 
+  const orderedCategories = useMemo(() => {
+    const categories = categoriesQuery.data ?? [];
+    if (categories.length === 0) return categories;
+
+    const prioritySlugs = ["fashion", "furniture"];
+    const bySlug = new Map(categories.map((category) => [category.slug, category] as const));
+    const prioritized = prioritySlugs.map((slug) => bySlug.get(slug)).filter(isDefined);
+    const rest = categories.filter((category) => !prioritySlugs.includes(category.slug));
+    return [...prioritized, ...rest];
+  }, [categoriesQuery.data]);
+
   const categoryNavItems = [
     { slug: "", label: "For You", icon: categoryIcons.all },
-    ...(categoriesQuery.data ?? []).map((category) => ({
+    ...orderedCategories.map((category) => ({
       slug: category.slug,
       label: category.name,
       icon: categoryIcons[category.slug] ?? Microwave
@@ -597,12 +612,12 @@ export function HomePage() {
 
         {productsQuery.isLoading ? <StatusView title="Loading products" description="Fetching the latest catalog." /> : null}
 
-        {!productsQuery.isLoading && (productsQuery.data?.data.length ?? 0) === 0 ? (
+        {!productsQuery.isLoading && (productsQuery.data?.data?.length ?? 0) === 0 ? (
           <StatusView title="No products found" description="Try changing the search term or clearing the selected category." />
         ) : null}
 
         <div className="grid grid-cols-3 gap-5 max-[1100px]:grid-cols-2 max-md:grid-cols-1">
-          {productsQuery.data?.data.map((product) => (
+          {(productsQuery.data?.data ?? []).map((product) => (
             <ProductCard
               inWishlist={wishlistProductIds.has(product.id)}
               key={product.id}

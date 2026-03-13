@@ -45,6 +45,11 @@ select {
 
 button {
   cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 img {
@@ -388,6 +393,14 @@ img {
   display: none;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .home-category-tile {
   display: flex;
   flex-direction: column;
@@ -400,6 +413,11 @@ img {
   color: #111827;
   font-weight: 500;
   flex: 0 0 94px;
+  transition: transform 0.08s ease;
+}
+
+.home-category-tile:active {
+  transform: scale(0.97);
 }
 
 .home-category-tile.is-active {
@@ -567,7 +585,11 @@ img {
   border: 0;
   border-radius: 999px;
   background: #cbd5e1;
-  transition: width 0.18s ease, background-color 0.18s ease;
+  transition: width 0.18s ease, background-color 0.18s ease, transform 0.08s ease;
+}
+
+.promo-dot:active {
+  transform: scale(0.9);
 }
 
 .promo-dot.is-active {
@@ -745,7 +767,11 @@ img {
 
 .ui-button {
   border: 0;
-  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.08s ease;
+}
+
+.ui-button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .ui-button--md {
@@ -1321,10 +1347,15 @@ img {
   background: var(--blue);
   color: white;
   font-weight: 700;
+  transition: filter 0.15s ease, transform 0.08s ease;
 }
 
 .button:hover {
   filter: brightness(0.96);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .button--secondary {
@@ -1356,6 +1387,11 @@ img {
   background: rgba(255, 255, 255, 0.95);
   color: var(--text-muted);
   font-weight: 700;
+  transition: transform 0.08s ease;
+}
+
+.wishlist-button:active {
+  transform: scale(0.92);
 }
 
 .wishlist-button.is-active,
@@ -1467,6 +1503,11 @@ img {
   background: #edf2ff;
   color: var(--blue);
   font-weight: 700;
+  transition: transform 0.08s ease;
+}
+
+.quantity-picker button:active {
+  transform: scale(0.9);
 }
 
 .spec-card {

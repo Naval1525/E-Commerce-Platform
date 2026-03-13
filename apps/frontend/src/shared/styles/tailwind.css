@@ -43,4 +43,9 @@
   .site-container-narrow {
     @apply mx-auto w-full max-w-[1180px] px-36 max-lg:px-14 max-md:px-5;
   }
+
+  /* Tap feedback for any clickable that should feel like a button */
+  .tap-press {
+    @apply transition-transform duration-75 ease-out active:scale-[0.97];
+  }
 }

@@ -22,6 +22,10 @@ const sortOptions = [
   { label: "Price -- High to Low", value: "priceDesc" }
 ] as const;
 
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
 export function SearchResultsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -35,6 +39,17 @@ export function SearchResultsPage() {
     queryKey: ["categories"],
     queryFn: fetchCategories
   });
+
+  const orderedCategories = useMemo(() => {
+    const categories = categoriesQuery.data ?? [];
+    if (categories.length === 0) return categories;
+
+    const prioritySlugs = ["fashion", "furniture"];
+    const bySlug = new Map(categories.map((category) => [category.slug, category] as const));
+    const prioritized = prioritySlugs.map((slug) => bySlug.get(slug)).filter(isDefined);
+    const rest = categories.filter((category) => !prioritySlugs.includes(category.slug));
+    return [...prioritized, ...rest];
+  }, [categoriesQuery.data]);
 
   const productsQuery = useQuery({
     queryKey: ["search-results", search, selectedCategory],
@@ -130,7 +145,7 @@ export function SearchResultsPage() {
               >
                 All Categories
               </button>
-              {(categoriesQuery.data ?? []).map((category) => (
+              {orderedCategories.map((category) => (
                 <button
                   className={`flex w-full items-center justify-between text-left ${selectedCategory === category.slug ? "font-semibold text-[#212121]" : "text-[#212121]"}`}
                   key={category.id}

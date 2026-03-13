@@ -145,10 +145,10 @@ export function ProductDetailPage() {
         <span className="max-w-[280px] truncate text-slate-700">{product.name}</span>
       </div>
 
-      <section className="grid grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <section className="grid grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:items-stretch">
         <div className="min-w-0">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid min-h-[520px] grid-cols-2 grid-rows-2 gap-3 sm:min-h-[600px]">
+            <div className="grid min-h-[520px] grid-cols-2 grid-rows-2 gap-3 sm:min-h-[620px]">
               {gridImages.length > 0 ? (
                 gridImages.map((url, index) => (
                   <div
@@ -191,12 +191,14 @@ export function ProductDetailPage() {
           </div>
         </div>
 
-        <div className="sticky top-[88px] flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          {/* Brand + title row with actions */}
+        <div className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:sticky md:top-[88px] md:h-[620px] md:overflow-hidden">
+          <div className="no-scrollbar md:flex-1 md:overflow-y-auto md:pr-3">
+          {/* Product name + brand row with actions */}
           <div className="mb-2 flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <h1 className="text-[1.35rem] font-bold leading-tight text-slate-900">
-                {product.brand ?? product.category.name}
+              <p className="text-sm font-medium text-slate-500">{product.brand ?? product.category.name}</p>
+              <h1 className="mt-0.5 text-[1.35rem] font-bold leading-tight text-slate-900 line-clamp-2">
+                {product.name}
               </h1>
               <p className="mt-1 text-sm leading-snug text-slate-600">
                 {descriptionExpanded || !product.description
@@ -267,7 +269,7 @@ export function ProductDetailPage() {
             <span className="text-2xl font-bold text-slate-900">{formatCurrency(discountedPrice)}</span>
           </div>
 
-          {/* WOW DEAL: dark blue banner with Buy at price + chevron */}
+          {/* WOW DEAL */}
           <div className="mt-4 overflow-hidden rounded-xl">
             <button
               className="flex w-full items-center justify-between gap-3 rounded-t-xl bg-[#0b3db8] px-4 py-3 text-left text-white"
@@ -312,12 +314,19 @@ export function ProductDetailPage() {
                   { title: `${formatCurrency(375)} off`, subtitle: "Flipkart Axis", footer: "Credit Card • Cashback" },
                   { title: `${formatCurrency(50)} off`, subtitle: "Paytm", footer: "UPI • Cashback" }
                 ].map((offer) => (
-                  <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4" key={offer.subtitle}>
+                  <div
+                    className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4"
+                    key={offer.subtitle}
+                  >
                     <div>
                       <p className="font-bold text-slate-900">{offer.title}</p>
-                      <p className="text-sm text-slate-600">{offer.subtitle} • {offer.footer}</p>
+                      <p className="text-sm text-slate-600">
+                        {offer.subtitle} • {offer.footer}
+                      </p>
                     </div>
-                    <button type="button" className="font-semibold text-[#2874f0]">Apply</button>
+                    <button type="button" className="font-semibold text-[#2874f0]">
+                      Apply
+                    </button>
                   </div>
                 ))}
               </div>
@@ -325,7 +334,7 @@ export function ProductDetailPage() {
           </div>
 
           {/* Delivery details */}
-          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+          <div className="mt-8 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
             <h2 className="mb-3 font-semibold text-slate-900">Delivery details</h2>
             <div className="space-y-2.5 text-sm">
               <div className="flex items-center gap-2">
@@ -349,84 +358,94 @@ export function ProductDetailPage() {
             </div>
           </div>
 
-          {product.inStock && (
-            <p className={`mt-2 text-sm font-medium ${isLowStock ? "text-amber-700" : "text-slate-600"}`}>
-              {product.stock} left
-            </p>
-          )}
-          {!product.inStock && (
-            <p className="mt-2 text-sm font-semibold text-red-600">Currently out of stock</p>
-          )}
+          {product.specifications && product.specifications.length > 0 ? (
+            <>
+              <section className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <h2 className="text-base font-bold text-slate-900">Key features</h2>
+                </div>
+                <ul className="grid gap-2 px-4 py-3 sm:grid-cols-2">
+                  {product.specifications.slice(0, 6).map((spec) => (
+                    <li className="flex items-start gap-2 text-sm text-slate-800" key={spec.id}>
+                      <span className="mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-[#2874f0]" />
+                      <span className="min-w-0">
+                        <span className="font-semibold">{spec.key}:</span>{" "}
+                        <span className="text-slate-700">{spec.value}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
 
-          {/* Sticky-style action buttons: Add to cart (white) + Buy at price (yellow) */}
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <button
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-slate-200 bg-white font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-60"
-              disabled={!product.inStock}
-              onClick={() => {
-                if (!hasToken) {
-                  requireAuth();
-                  return;
-                }
-                addToCartMutation.mutate({ productId: product.id, quantity: 1 });
-              }}
-              type="button"
-            >
-              <ShoppingCart size={18} />
-              Add to cart
-            </button>
-            <button
-              className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#ffe500] font-semibold text-slate-900 shadow-sm transition hover:brightness-95 disabled:opacity-60"
-              disabled={!product.inStock}
-              onClick={async () => {
-                if (!hasToken) {
-                  requireAuth();
-                  return;
-                }
-                await addToCartMutation.mutateAsync({ productId: product.id, quantity: 1 });
-                navigate("/cart");
-              }}
-              type="button"
-            >
-              Buy at {formatCurrency(discountedPrice)}
-            </button>
-          </div>
-
-          {/* Product details / specs below */}
-          <div className="mt-6">
-            <h2 className="text-lg font-bold text-slate-900">Product details</h2>
-            {product.specifications && product.specifications.length > 0 ? (
-              <dl className="mt-3 space-y-2">
-                {product.specifications.map((item) => (
-                  <div className="flex justify-between gap-4 border-t border-slate-100 py-2 first:border-t-0 first:pt-0" key={item.id}>
-                    <dt className="text-slate-500">{item.key}</dt>
-                    <dd className="font-medium text-slate-900 text-right">{item.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <p className="mt-2 text-sm text-slate-500">No specifications available.</p>
-            )}
-          </div>
-
-          {product.specifications && product.specifications.length > 0 && (
-            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <p className="mb-3 font-semibold text-slate-900">Key features</p>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {product.specifications.slice(0, 6).map((spec) => (
-                  <div className="flex items-start gap-2 rounded-lg bg-white p-3 shadow-sm" key={spec.id}>
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-[#2874f0]">
-                      {spec.key.charAt(0)}
+              <section className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <h2 className="text-base font-bold text-slate-900">Product details</h2>
+                </div>
+                <dl className="divide-y divide-slate-100">
+                  {product.specifications.map((item) => (
+                    <div
+                      className="grid grid-cols-1 gap-1 px-4 py-3 sm:grid-cols-[180px_minmax(0,1fr)] sm:items-start sm:gap-4"
+                      key={item.id}
+                    >
+                      <dt className="text-sm font-medium text-slate-600">{item.key}</dt>
+                      <dd className="text-sm font-semibold text-slate-900 sm:text-right">{item.value}</dd>
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-500">{spec.key}</p>
-                      <p className="text-sm font-semibold text-slate-900">{spec.value}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </dl>
+              </section>
+            </>
+          ) : (
+            <section className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+              <div className="border-b border-slate-100 px-4 py-3">
+                <h2 className="text-base font-bold text-slate-900">Product details</h2>
               </div>
-            </div>
+              <p className="px-4 py-3 text-sm text-slate-500">No specifications available.</p>
+            </section>
           )}
+          </div>
+
+          <div className="mt-6 md:mt-0 md:border-t md:border-slate-200 md:pt-4">
+            {product.inStock ? (
+              <p className={`mb-3 text-sm font-medium ${isLowStock ? "text-amber-700" : "text-slate-600"}`}>
+                {product.stock} left
+              </p>
+            ) : (
+              <p className="mb-3 text-sm font-semibold text-red-600">Currently out of stock</p>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-slate-200 bg-white font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-60"
+                disabled={!product.inStock}
+                onClick={() => {
+                  if (!hasToken) {
+                    requireAuth();
+                    return;
+                  }
+                  addToCartMutation.mutate({ productId: product.id, quantity: 1 });
+                }}
+                type="button"
+              >
+                <ShoppingCart size={18} />
+                Add to cart
+              </button>
+              <button
+                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#ffe500] font-semibold text-slate-900 shadow-sm transition hover:brightness-95 disabled:opacity-60"
+                disabled={!product.inStock}
+                onClick={async () => {
+                  if (!hasToken) {
+                    requireAuth();
+                    return;
+                  }
+                  await addToCartMutation.mutateAsync({ productId: product.id, quantity: 1 });
+                  navigate("/cart");
+                }}
+                type="button"
+              >
+                Buy at {formatCurrency(discountedPrice)}
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

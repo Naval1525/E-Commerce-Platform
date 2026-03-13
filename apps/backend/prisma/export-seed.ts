@@ -1,3 +1,4 @@
+import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
@@ -27,6 +28,7 @@ function buildSeedFile(categories: SeedCategory[], products: SeedProduct[]) {
   const productsJson = stableStringify(products);
 
   return `import { PrismaClient } from "@prisma/client";
+import { pathToFileURL } from "node:url";
 
 const prisma = new PrismaClient();
 
@@ -128,15 +130,19 @@ async function main() {
   console.log(\`Seeded \${categories.length} categories and \${productSeeds.length} products\`);
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (error) => {
-    console.error(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+const isMain = Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1] ?? "").href;
+
+if (isMain) {
+  main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+}
 `;
 }
 
@@ -190,4 +196,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
