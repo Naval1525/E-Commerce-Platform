@@ -1,12 +1,12 @@
 import type { Request, Response } from "express";
-import { getAuthUserOrDemo } from "../../shared/auth";
+import { requireAuth } from "../../shared/auth";
 import { parseOrThrow } from "../../shared/http";
 import { mapOrder } from "./order.mapper";
 import { getOrderById, getOrders, placeOrder } from "./order.service";
 import { checkoutSchema, orderParamSchema } from "./order.schema";
 
 export async function checkoutHandler(req: Request, res: Response) {
-  const user = await getAuthUserOrDemo(req);
+  const user = requireAuth(req);
   const body = parseOrThrow(checkoutSchema, req.body);
   const order = await placeOrder(user, {
     ...body,
@@ -20,7 +20,7 @@ export async function checkoutHandler(req: Request, res: Response) {
 }
 
 export async function getOrdersHandler(_req: Request, res: Response) {
-  const user = await getAuthUserOrDemo(_req);
+  const user = requireAuth(_req);
   const orders = await getOrders(user);
 
   res.json({
@@ -29,7 +29,7 @@ export async function getOrdersHandler(_req: Request, res: Response) {
 }
 
 export async function getOrderByIdHandler(req: Request, res: Response) {
-  const user = await getAuthUserOrDemo(req);
+  const user = requireAuth(req);
   const params = parseOrThrow(orderParamSchema, req.params);
   const order = await getOrderById(user, params.orderId);
 

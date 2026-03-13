@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AppLayout } from "./AppLayout";
+import { ProtectedRoute } from "../shared/components/ProtectedRoute";
 import { CartPage } from "../pages/cart/CartPage";
 import { CheckoutPage } from "../pages/checkout/CheckoutPage";
 import { HomePage } from "../pages/home/HomePage";
@@ -30,23 +31,53 @@ export const router = createBrowserRouter([
       },
       {
         path: "/cart",
-        element: <CartPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <CartPage />
+          }
+        ]
       },
       {
         path: "/checkout",
-        element: <CheckoutPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <CheckoutPage />
+          }
+        ]
       },
       {
         path: "/orders",
-        element: <OrdersPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <OrdersPage />
+          }
+        ]
       },
       {
         path: "/orders/:orderId/confirmation",
-        element: <OrderConfirmationPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <OrderConfirmationPage />
+          }
+        ]
       },
       {
         path: "/wishlist",
-        element: <WishlistPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <WishlistPage />
+          }
+        ]
       },
       {
         path: "/login",

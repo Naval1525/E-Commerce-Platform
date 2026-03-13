@@ -8,7 +8,7 @@ Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScri
 - Product detail page (gallery, WOW DEAL, delivery details, key features/specs)
 - Cart + wishlist
 - Checkout + order placement + order history
-- Optional auth (signup/login) + sessions
+- Auth (signup/login) + protected routes
 - Email notifications via Gmail SMTP (signup, login alert, order confirmation)
 
 ## How It Works (High Level)
@@ -95,7 +95,7 @@ docker compose up --build
 
 Note: Docker seeds the database on first start (default limit: `250` products).
 Open the app at `http://localhost:3000`.
-You can use the app without login (it uses a seeded **Demo User** by default), or signup/login to use your own account.
+Signup/Login is required for cart/checkout/orders/wishlist.
 
 ### Option B: Local Development (Node + Docker Postgres)
 
@@ -158,7 +158,6 @@ Backend (`apps/backend/.env`):
 ```env
 PORT=4000
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform
-DEFAULT_USER_EMAIL=demo@flipkart-clone.local
 JWT_SECRET=replace_with_a_long_random_string
 
 # Email (Gmail app password)
@@ -182,7 +181,6 @@ VITE_API_URL=http://127.0.0.1:4000/api
 ## Assumptions
 
 - Payments are simulated (no real payment gateway).
-- If you are not logged in, cart/checkout/orders use the seeded demo user (`DEFAULT_USER_EMAIL`).
 
 ## Deployment
 

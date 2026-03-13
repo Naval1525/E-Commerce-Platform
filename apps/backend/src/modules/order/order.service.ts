@@ -12,17 +12,6 @@ export async function placeOrder(
     throw new AppError("Cart is empty", 400);
   }
 
-  const isDemoEmail = user.email.endsWith(".local");
-  if (isDemoEmail) {
-    await updateOrderConfirmationNotification({
-      userId: user.id,
-      orderId: order.id,
-      status: "FAILED",
-      sentAt: null
-    });
-    return order;
-  }
-
   try {
     const result = await sendOrderPlacedEmail({
       user,
