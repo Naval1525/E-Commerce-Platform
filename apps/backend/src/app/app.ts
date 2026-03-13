@@ -9,12 +9,37 @@ import { errorMiddleware } from "../shared/http";
 
 dotenv.config();
 
+const corsOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = corsOrigin
+  ? corsOrigin.split(",").map((o) => o.trim()).filter(Boolean)
+  : null;
+
+function allowOrigin(origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) {
+  if (!origin) {
+    cb(null, true);
+    return;
+  }
+  if (allowedOrigins && allowedOrigins.length > 0) {
+    if (allowedOrigins.includes(origin)) {
+      cb(null, true);
+      return;
+    }
+    if (origin.endsWith(".vercel.app")) {
+      cb(null, true);
+      return;
+    }
+    cb(null, false);
+    return;
+  }
+  cb(null, true);
+}
+
 export function createApp() {
   const app = express();
 
   app.use(
     cors({
-      origin: true,
+      origin: allowedOrigins ? allowOrigin : true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
     })
