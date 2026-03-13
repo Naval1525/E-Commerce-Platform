@@ -109,15 +109,67 @@ export async function sendSignupEmail(user: { name: string; email: string }) {
   return sendMail({
     to: user.email,
     subject: "Welcome to Flipkart Clone",
-    text: `Hi ${user.name},\n\nYour account has been created successfully.\n\nHappy shopping!`
+    text: `Hi ${user.name},\n\nYour account has been created successfully.\n\nHappy shopping!\n\n— Flipkart Clone`,
+    html: `
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#0f172a">
+        <div style="max-width:560px;margin:0 auto;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+          <div style="background:#ffe500;padding:18px 20px">
+            <div style="font-weight:900;font-style:italic;font-size:20px;color:#2874f0">flipkart</div>
+          </div>
+          <div style="padding:18px 20px">
+            <h2 style="margin:0 0 10px;font-size:18px">Welcome, ${user.name}!</h2>
+            <p style="margin:0 0 10px;color:#334155">Your account has been created successfully.</p>
+            <div style="margin:14px 0;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px">
+              <div style="font-size:12px;color:#64748b;margin-bottom:4px">Signed up with</div>
+              <div style="font-weight:700">${user.email}</div>
+            </div>
+            <p style="margin:0;color:#334155">Happy shopping!</p>
+            <p style="margin:16px 0 0;color:#64748b;font-size:12px">This is an automated message from Flipkart Clone.</p>
+          </div>
+        </div>
+      </div>
+    `.trim()
   });
 }
 
 export async function sendLoginEmail(user: { name: string; email: string }) {
+  const when = new Date().toLocaleString("en-IN", { timeZoneName: "short" });
   return sendMail({
     to: user.email,
     subject: "Login alert",
-    text: `Hi ${user.name},\n\nYou just logged in to your account.\n\nIf this wasn't you, please change your password.`
+    text:
+      `Hi ${user.name},\n\n` +
+      `We noticed a login to your account.\n` +
+      `Time: ${when}\n\n` +
+      `If this wasn't you, please change your password.\n\n` +
+      `— Flipkart Clone`,
+    html: `
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#0f172a">
+        <div style="max-width:560px;margin:0 auto;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+          <div style="background:#0b3db8;padding:18px 20px">
+            <div style="font-weight:900;font-style:italic;font-size:20px;color:#ffe500">flipkart</div>
+          </div>
+          <div style="padding:18px 20px">
+            <h2 style="margin:0 0 10px;font-size:18px">Login alert</h2>
+            <p style="margin:0 0 10px;color:#334155">We noticed a login to your account.</p>
+            <div style="margin:14px 0;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px">
+              <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div>
+                  <div style="font-size:12px;color:#64748b">Account</div>
+                  <div style="font-weight:700">${user.email}</div>
+                </div>
+                <div>
+                  <div style="font-size:12px;color:#64748b">Time</div>
+                  <div style="font-weight:700">${when}</div>
+                </div>
+              </div>
+            </div>
+            <p style="margin:0;color:#334155">If this wasn’t you, please change your password.</p>
+            <p style="margin:16px 0 0;color:#64748b;font-size:12px">This is an automated message from Flipkart Clone.</p>
+          </div>
+        </div>
+      </div>
+    `.trim()
   });
 }
 
@@ -125,10 +177,23 @@ export async function sendOrderPlacedEmail(input: {
   user: { name: string; email: string };
   order: { id: string; orderNumber: string; totalAmount: number; items: Array<{ productNameSnapshot: string; quantity: number }> };
 }) {
+  const when = new Date().toLocaleString("en-IN", { timeZoneName: "short" });
   const lines = input.order.items
     .slice(0, 12)
     .map((item) => `- ${item.productNameSnapshot} × ${item.quantity}`)
     .join("\n");
+
+  const itemsHtml = input.order.items
+    .slice(0, 12)
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding:10px 0;border-top:1px solid #e2e8f0;color:#334155">${item.productNameSnapshot}</td>
+          <td style="padding:10px 0;border-top:1px solid #e2e8f0;text-align:right;font-weight:700;color:#0f172a">× ${item.quantity}</td>
+        </tr>
+      `.trim()
+    )
+    .join("");
 
   return sendMail({
     to: input.user.email,
@@ -137,8 +202,51 @@ export async function sendOrderPlacedEmail(input: {
       `Hi ${input.user.name},\n\n` +
       `Your order has been placed successfully.\n\n` +
       `Order: ${input.order.orderNumber}\n` +
+      `Time: ${when}\n` +
       `Total: ₹${input.order.totalAmount}\n\n` +
       `Items:\n${lines}\n\n` +
-      `Thank you for shopping with us!`
+      `Thank you for shopping with us!\n\n` +
+      `— Flipkart Clone`,
+    html: `
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#0f172a">
+        <div style="max-width:560px;margin:0 auto;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+          <div style="background:#ffe500;padding:18px 20px">
+            <div style="font-weight:900;font-style:italic;font-size:20px;color:#2874f0">flipkart</div>
+          </div>
+          <div style="padding:18px 20px">
+            <h2 style="margin:0 0 10px;font-size:18px">Order confirmed</h2>
+            <p style="margin:0 0 12px;color:#334155">Thanks ${input.user.name}! Your order has been placed successfully.</p>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0">
+              <div style="flex:1;min-width:220px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px">
+                <div style="font-size:12px;color:#64748b;margin-bottom:4px">Order ID</div>
+                <div style="font-weight:800">${input.order.orderNumber}</div>
+              </div>
+              <div style="flex:1;min-width:220px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px">
+                <div style="font-size:12px;color:#64748b;margin-bottom:4px">Total</div>
+                <div style="font-weight:800">₹${input.order.totalAmount}</div>
+              </div>
+            </div>
+
+            <div style="font-size:12px;color:#64748b;margin:0 0 6px">Placed at</div>
+            <div style="font-weight:700;margin:0 0 12px">${when}</div>
+
+            <div style="margin-top:14px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+              <div style="background:#f8fafc;padding:10px 14px;font-weight:800">Items</div>
+              <div style="padding:0 14px">
+                <table style="width:100%;border-collapse:collapse">
+                  <tbody>
+                    ${itemsHtml}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p style="margin:16px 0 0;color:#334155">Thank you for shopping with us!</p>
+            <p style="margin:16px 0 0;color:#64748b;font-size:12px">This is an automated message from Flipkart Clone.</p>
+          </div>
+        </div>
+      </div>
+    `.trim()
   });
 }
