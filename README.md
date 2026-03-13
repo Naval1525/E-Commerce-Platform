@@ -1,84 +1,22 @@
-# E-Commerce Platform
+# Flipkart Clone – E‑Commerce Platform
 
-Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScript, Prisma, and PostgreSQL.
+Flipkart‑inspired full‑stack e‑commerce platform built with **React (Vite)** + **Express** + **Prisma** + **PostgreSQL**.
 
-## Features
+## Project Demo (Most Important)
 
-- Product listing, search, categories, and filters
-- Product detail page (gallery, WOW DEAL, delivery details, key features/specs)
-- Cart + wishlist
-- Checkout + order placement + order history
-- Auth (signup/login) + protected routes
+- Live Demo: _add your deployed link here_
+- Demo Video: _add your video link here_ (YouTube / Drive / Loom)
+
+## What’s Implemented
+
+- Product listing (Flipkart‑style grid), search, and category filters
+- Product detail page (gallery, WOW DEAL, delivery, key features/specifications)
+- Cart (add/update quantity/remove) + cart summary
+- Checkout (shipping address form) + place order + confirmation with order ID
+- Orders history
+- Wishlist
+- Authentication (signup/login) + protected routes
 - Email notifications via Gmail SMTP (signup, login alert, order confirmation)
-
-## How It Works (High Level)
-
-- **Frontend** (`apps/frontend`): React UI + routing, calls the backend REST API.
-- **Backend** (`apps/backend`): Express API + Prisma ORM.
-- **Database**: PostgreSQL (local via Docker Compose).
-
-## Tech Stack
-
-- Frontend: React, Vite, TypeScript, React Router, TanStack Query, React Hook Form
-- Backend: Express, TypeScript, Prisma
-- Database: PostgreSQL
-
-## Folder Structure
-
-```txt
-ecommerce_platform/
-  ./
-    README.md
-    docker-compose.yml
-    package.json
-    package-lock.json
-  apps/
-    backend/
-      prisma/
-        schema.prisma
-        seed.ts
-        seed.from-db.ts
-        export-seed.ts
-        remove-banned-products.ts
-      src/
-        app/
-          server.ts
-        modules/
-          auth/
-          order/
-        shared/
-          mailer.ts
-      .env.example
-    frontend/
-      public/
-        favicon.svg
-      src/
-        pages/
-          home/
-          product-detail/
-          search-results/
-          checkout/
-        shared/
-          components/
-          styles/
-      .env.example
-  docs/
-    screenshots/  # assignment screenshots used in README
-  packages/
-    shared/     # shared types/helpers (scaffold)
-```
-
-## Screenshots
-
-![Homepage](docs/screenshots/homepage.png)
-![Product search](docs/screenshots/product-search.png)
-![Product detail](docs/screenshots/product-detail.png)
-![Checkout](docs/screenshots/checkout.png)
-![Wishlist](docs/screenshots/wishlist.png)
-![Login](docs/screenshots/login.png)
-![Order history](docs/screenshots/order-history.png)
-![Email receipt](docs/screenshots/email.jpg)
-
 
 ## Setup & Run
 
@@ -142,7 +80,6 @@ npm run dev
 ```
 
 Open the app at `http://localhost:5173` and create an account using **Signup**.
-You can also use the app without login (it uses a seeded **Demo User** by default).
 
 ## Seeding & DB Commands
 
@@ -179,11 +116,46 @@ VITE_API_URL=http://127.0.0.1:4000/api
 - If `SEED_CSV_PATH` is not found, the seed falls back to an included snapshot dataset.
 - For Gmail SMTP on a VM, make sure outbound SMTP ports are allowed (typically `465`/`587`) and set the same env vars there.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/homepage.png" alt="Homepage" width="420" /></td>
+    <td><img src="docs/screenshots/product-search.png" alt="Search" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/product-detail.png" alt="Product detail" width="420" /></td>
+    <td><img src="docs/screenshots/checkout.png" alt="Checkout" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/wishlist.png" alt="Wishlist" width="420" /></td>
+    <td><img src="docs/screenshots/order-history.png" alt="Orders" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/login.png" alt="Login" width="420" /></td>
+    <td><img src="docs/screenshots/email.jpg" alt="Email receipt" width="420" /></td>
+  </tr>
+</table>
+
+## Tech Stack
+
+- Frontend: React, Vite, TypeScript, React Router, TanStack Query, Tailwind CSS
+- Backend: Node.js, Express, TypeScript, Prisma
+- Database: PostgreSQL (Docker Compose)
+
+## Folder Structure
+
+```txt
+ecommerce_platform/
+  apps/
+    frontend/   # React (Vite) client
+    backend/    # Express API + Prisma + seed/scripts
+  docs/
+    screenshots/  # screenshots used in this README
+  packages/
+    shared/     # shared types/helpers (scaffold)
+```
+
 ## Assumptions
 
 - Payments are simulated (no real payment gateway).
-
-## Deployment
-
-- **Frontend:** [https://e-commerce-platform-frontend-do7kdupol-naval1525s-projects.vercel.app/](https://e-commerce-platform-frontend-do7kdupol-naval1525s-projects.vercel.app/)
-- **Backend:** [http://api.bilio.in](http://api.bilio.in)
