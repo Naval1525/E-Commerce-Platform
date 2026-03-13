@@ -22,6 +22,12 @@ type SessionCacheEntry = {
 const authCache = new Map<string, SessionCacheEntry>();
 
 let jwtKey: Uint8Array | null = null;
+let cachedDemoUser:
+  | {
+      email: string;
+      user: { id: string; email: string; name: string };
+    }
+  | null = null;
 
 function getJwtKey() {
   if (jwtKey) return jwtKey;
@@ -154,4 +160,34 @@ export function requireAuth(req: Request) {
   }
 
   return req.authUser;
+}
+
+export async function getAuthUserOrDemo(req: Request) {
+  if (req.authUser) return req.authUser;
+
+  const defaultEmail = (process.env.DEFAULT_USER_EMAIL ?? "demo@flipkart-clone.local").trim();
+  if (!defaultEmail) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  if (cachedDemoUser?.email === defaultEmail) {
+    req.authUser = cachedDemoUser.user;
+    return cachedDemoUser.user;
+  }
+
+  const existing = await prisma.user.findUnique({
+    where: { email: defaultEmail },
+    select: { id: true, email: true, name: true }
+  });
+
+  const user =
+    existing ??
+    (await prisma.user.create({
+      data: { email: defaultEmail, name: "Demo User" },
+      select: { id: true, email: true, name: true }
+    }));
+
+  cachedDemoUser = { email: defaultEmail, user };
+  req.authUser = user;
+  return user;
 }

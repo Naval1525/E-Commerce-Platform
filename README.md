@@ -8,7 +8,7 @@ Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScri
 - Product detail page (gallery, WOW DEAL, delivery details, key features/specs)
 - Cart + wishlist
 - Checkout + order placement + order history
-- Auth (signup/login) + protected routes
+- Optional auth (signup/login) + sessions
 - Email notifications via Gmail SMTP (signup, login alert, order confirmation)
 
 ## How It Works (High Level)
@@ -94,7 +94,8 @@ docker compose up --build
 - Postgres: `localhost:5433` (mapped from container `5432`)
 
 Note: Docker seeds the database on first start (default limit: `250` products).
-Open the app at `http://localhost:3000` and create an account using **Signup**.
+Open the app at `http://localhost:3000`.
+You can use the app without login (it uses a seeded **Demo User** by default), or signup/login to use your own account.
 
 ### Option B: Local Development (Node + Docker Postgres)
 
@@ -140,6 +141,7 @@ npm run dev
 ```
 
 Open the app at `http://localhost:5173` and create an account using **Signup**.
+You can also use the app without login (it uses a seeded **Demo User** by default).
 
 ## Seeding & DB Commands
 
@@ -156,6 +158,7 @@ Backend (`apps/backend/.env`):
 ```env
 PORT=4000
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform
+DEFAULT_USER_EMAIL=demo@flipkart-clone.local
 JWT_SECRET=replace_with_a_long_random_string
 
 # Email (Gmail app password)
@@ -175,3 +178,13 @@ VITE_API_URL=http://127.0.0.1:4000/api
 - The seed script clears existing rows in the main tables before inserting.
 - If `SEED_CSV_PATH` is not found, the seed falls back to an included snapshot dataset.
 - For Gmail SMTP on a VM, make sure outbound SMTP ports are allowed (typically `465`/`587`) and set the same env vars there.
+
+## Assumptions
+
+- Payments are simulated (no real payment gateway).
+- If you are not logged in, cart/checkout/orders use the seeded demo user (`DEFAULT_USER_EMAIL`).
+
+## Deployment
+
+- Frontend: _add your deployed link here_
+- Backend: _add your deployed link here_
