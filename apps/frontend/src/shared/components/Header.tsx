@@ -215,9 +215,9 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
                           navigate(`/products/${product.slug}`);
                         }}
                       >
-                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-slate-100">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-white">
                           {imageUrl ? (
-                            <img className="h-full w-full object-cover" src={imageUrl} alt={product.name} loading="lazy" />
+                            <img className="h-full w-full object-contain p-1" src={imageUrl} alt={product.name} loading="lazy" />
                           ) : (
                             <div className="grid h-full w-full place-items-center text-xs font-semibold text-slate-500">
                               {product.name.slice(0, 1).toUpperCase()}
