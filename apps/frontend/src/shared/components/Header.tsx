@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronDown,
   Headset,
@@ -9,9 +9,9 @@ import {
   ShoppingCart,
   UserCircle2
 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { clearAuthToken, getAuthToken } from "../api/client";
+import { clearAuthToken, fetchProducts, getAuthToken, resolveImageUrl } from "../api/client";
 import type { AuthUser, Cart, Wishlist } from "../api/types";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -29,19 +29,58 @@ type HeaderProps = {
   user?: AuthUser;
 };
 
+function useDebouncedValue<T>(value: T, delayMs: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedValue(value), delayMs);
+    return () => window.clearTimeout(timer);
+  }, [value, delayMs]);
+
+  return debouncedValue;
+}
+
 export function Header({ cart, wishlist, user }: HeaderProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const headerSearchRef = useRef<HTMLDivElement | null>(null);
   const loginMenuCloseTimer = useRef<number | null>(null);
   const hasToken = Boolean(getAuthToken());
   const cartItemCount = cart?.summary.itemCount ?? 0;
 
+  const trimmedSearch = search.trim();
+  const debouncedSearch = useDebouncedValue(trimmedSearch, 220);
+
+  const suggestionParams = useMemo(() => {
+    return {
+      search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+      page: 1,
+      limit: 6
+    };
+  }, [debouncedSearch]);
+
+  const { data: suggestionData, isFetching: isSuggestionsFetching } = useQuery({
+    queryKey: ["products", "suggestions", suggestionParams],
+    queryFn: () => fetchProducts(suggestionParams),
+    enabled: suggestionsOpen,
+    staleTime: 30_000,
+    retry: false
+  });
+
+  const suggestions = suggestionData?.data ?? [];
+
   useEffect(() => {
     setSearch(searchParams.get("search") ?? "");
   }, [searchParams]);
+
+  useEffect(() => {
+    setActiveSuggestionIndex(-1);
+  }, [debouncedSearch, suggestionsOpen]);
 
   useEffect(() => {
     return () => {
@@ -49,6 +88,17 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
         window.clearTimeout(loginMenuCloseTimer.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!headerSearchRef.current) return;
+      if (headerSearchRef.current.contains(event.target as Node)) return;
+      setSuggestionsOpen(false);
+    }
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    return () => window.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
   function scheduleLoginMenuClose() {
@@ -73,6 +123,8 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
       params.set("search", search.trim());
     }
 
+    setSuggestionsOpen(false);
+    setActiveSuggestionIndex(-1);
     navigate({
       pathname: "/search",
       search: params.toString()
@@ -90,16 +142,102 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
           <span className="text-base italic">Flipkart</span>
         </Link>
 
-        <form className="grid min-h-11 grid-cols-[auto_1fr] items-center rounded-xl border-2 border-brand-blue bg-white px-4" onSubmit={handleSubmit}>
-          <Search className="text-slate-500" size={20} />
-          <Input
-            aria-label="Search products"
-            className="min-w-0"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search for products, brands and more"
-          />
-        </form>
+        <div className="relative" ref={headerSearchRef}>
+          <form className="grid min-h-11 grid-cols-[auto_1fr] items-center rounded-xl border-2 border-brand-blue bg-white px-4" onSubmit={handleSubmit}>
+            <Search className="text-slate-500" size={20} />
+            <Input
+              aria-label="Search products"
+              className="min-w-0"
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setSuggestionsOpen(true);
+              }}
+              onFocus={() => setSuggestionsOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setSuggestionsOpen(false);
+                  setActiveSuggestionIndex(-1);
+                  return;
+                }
+                if (event.key === "ArrowDown") {
+                  if (!suggestionsOpen) setSuggestionsOpen(true);
+                  if (suggestions.length > 0) {
+                    event.preventDefault();
+                    setActiveSuggestionIndex((current) => Math.min(current + 1, suggestions.length - 1));
+                  }
+                  return;
+                }
+                if (event.key === "ArrowUp") {
+                  if (suggestions.length > 0) {
+                    event.preventDefault();
+                    setActiveSuggestionIndex((current) => Math.max(current - 1, 0));
+                  }
+                  return;
+                }
+                if (event.key === "Enter" && suggestionsOpen && activeSuggestionIndex >= 0) {
+                  const picked = suggestions[activeSuggestionIndex];
+                  if (picked) {
+                    event.preventDefault();
+                    setSuggestionsOpen(false);
+                    setActiveSuggestionIndex(-1);
+                    setSearch(picked.name);
+                    navigate(`/products/${picked.slug}`);
+                  }
+                }
+              }}
+              placeholder="Search for products, brands and more"
+            />
+          </form>
+
+          {suggestionsOpen ? (
+            <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-none border border-slate-200 bg-white shadow-lg">
+              {isSuggestionsFetching && suggestions.length === 0 ? (
+                <div className="px-4 py-3 text-sm text-slate-500">Searching…</div>
+              ) : null}
+
+              {suggestions.length > 0 ? (
+                <div className="divide-y divide-slate-100">
+                  {suggestions.map((product, index) => {
+                    const imageUrl = resolveImageUrl(product.image);
+                    return (
+                      <button
+                        key={product.id}
+                        type="button"
+                        className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 focus:bg-slate-50 ${
+                          index === activeSuggestionIndex ? "bg-slate-50" : ""
+                        }`}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => {
+                          setSuggestionsOpen(false);
+                          setActiveSuggestionIndex(-1);
+                          setSearch(product.name);
+                          navigate(`/products/${product.slug}`);
+                        }}
+                      >
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-slate-100">
+                          {imageUrl ? (
+                            <img className="h-full w-full object-cover" src={imageUrl} alt={product.name} loading="lazy" />
+                          ) : (
+                            <div className="grid h-full w-full place-items-center text-xs font-semibold text-slate-500">
+                              {product.name.slice(0, 1).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="truncate text-[15px] text-slate-900">{product.name}</div>
+                          <div className="truncate text-[13px] text-[#2874f0]">in {product.category.name}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : trimmedSearch.length > 0 && !isSuggestionsFetching ? (
+                <div className="px-4 py-3 text-sm text-slate-500">No matches found.</div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
 
         <nav className="flex items-center gap-2 max-md:overflow-x-auto max-md:pb-1">
           {hasToken && user ? (
