@@ -167,7 +167,11 @@ export function CheckoutPage() {
               </label>
             </div>
 
-            <button className="inline-flex min-h-12 items-center justify-center rounded bg-[#fbc300] px-6 text-base font-semibold text-[#212121] disabled:opacity-60" disabled={checkoutMutation.isPending} type="submit">
+            <button
+              className="inline-flex min-h-12 items-center justify-center rounded bg-[#ffe500] px-6 text-base font-semibold text-[#212121] transition hover:brightness-95 disabled:opacity-60"
+              disabled={checkoutMutation.isPending}
+              type="submit"
+            >
               {checkoutMutation.isPending ? "Placing Order..." : "Place Order"}
             </button>
           </form>

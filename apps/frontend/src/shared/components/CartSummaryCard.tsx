@@ -57,7 +57,7 @@ export function CartSummaryCard({ cart, showCheckout = true }: CartSummaryCardPr
               <p className="text-[2rem] font-medium leading-none text-[#212121]">{formatCurrency(cart.summary.totalAmount)}</p>
             </div>
             <Link
-              className={`inline-flex min-h-12 min-w-[170px] items-center justify-center rounded bg-[#fbc300] px-6 text-base font-semibold text-[#212121] ${
+              className={`inline-flex min-h-12 min-w-[170px] items-center justify-center rounded bg-[#ffe500] px-6 text-base font-semibold text-[#212121] transition hover:brightness-95 ${
                 cart.items.length === 0 ? "pointer-events-none opacity-50" : ""
               }`}
               to="/checkout"
