@@ -134,12 +134,8 @@ export function Header({ cart, wishlist, user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white">
       <div className="site-container grid min-h-[72px] grid-cols-[146px_minmax(640px,1fr)_auto] items-center gap-7 max-[1100px]:grid-cols-[132px_minmax(0,1fr)_auto] max-[1100px]:gap-4 max-md:grid-cols-1 max-md:py-3">
-        <Link
-          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-yellow px-3 py-2 text-sm font-extrabold text-slate-900"
-          to="/"
-        >
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-blue-600 text-[1.3rem] font-black italic text-brand-yellow">f</span>
-          <span className="text-base italic">Flipkart</span>
+        <Link className="inline-flex items-center" to="/">
+          <img alt="Flipkart" className="h-26 w-auto object-contain ml-3" src="/logo.png" />
         </Link>
 
         <div className="relative" ref={headerSearchRef}>
