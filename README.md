@@ -77,7 +77,8 @@ ecommerce_platform/
 ![Wishlist](docs/screenshots/wishlist.png)
 ![Login](docs/screenshots/login.png)
 ![Order history](docs/screenshots/order-history.png)
-![Email receipt](docs/screenshots/email-receipt.jpg)
+![Email receipt](docs/screenshots/email.jpg)
+
 
 ## Setup & Run
 
