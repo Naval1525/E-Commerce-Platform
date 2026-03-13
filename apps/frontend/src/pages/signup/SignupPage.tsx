@@ -1,13 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { setAuthToken, signup } from "../../shared/api/client";
 
-type SignupForm = {
-  name: string;
-  email: string;
-  password: string;
-};
+const signupSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters")
+});
+
+type SignupForm = z.infer<typeof signupSchema>;
 
 export function SignupPage() {
   const navigate = useNavigate();
@@ -46,32 +49,54 @@ export function SignupPage() {
           </div>
         </div>
 
-        <form className="flex min-h-[560px] flex-col px-8 py-10" onSubmit={form.handleSubmit((values) => signupMutation.mutate(values))}>
+        <form
+          className="flex min-h-[560px] flex-col px-8 py-10"
+          onSubmit={form.handleSubmit((values) => {
+            const result = signupSchema.safeParse(values);
+            if (!result.success) {
+              const err = result.error.flatten();
+              if (err.fieldErrors.name?.[0]) form.setError("name", { message: err.fieldErrors.name[0] });
+              if (err.fieldErrors.email?.[0]) form.setError("email", { message: err.fieldErrors.email[0] });
+              if (err.fieldErrors.password?.[0]) form.setError("password", { message: err.fieldErrors.password[0] });
+              return;
+            }
+            signupMutation.mutate(result.data);
+          })}
+        >
           <div className="space-y-7">
             <label className="block">
               <span className="text-[15px] text-slate-500">Enter Full Name</span>
               <input
-                {...form.register("name", { required: true })}
+                {...form.register("name")}
                 className="mt-3 w-full border-0 border-b-2 border-slate-300 bg-transparent px-0 pb-3 pt-1 outline-none transition-colors focus:border-brand-blue"
               />
+              {form.formState.errors.name ? (
+                <p className="mt-1 text-sm font-medium text-red-600">{form.formState.errors.name.message}</p>
+              ) : null}
             </label>
 
             <label className="block">
               <span className="text-[15px] text-slate-500">Enter Email</span>
               <input
-                {...form.register("email", { required: true })}
+                {...form.register("email")}
                 className="mt-3 w-full border-0 border-b-2 border-slate-300 bg-transparent px-0 pb-3 pt-1 outline-none transition-colors focus:border-brand-blue"
                 type="email"
               />
+              {form.formState.errors.email ? (
+                <p className="mt-1 text-sm font-medium text-red-600">{form.formState.errors.email.message}</p>
+              ) : null}
             </label>
 
             <label className="block">
               <span className="text-[15px] text-slate-500">Create Password</span>
               <input
-                {...form.register("password", { required: true, minLength: 6 })}
+                {...form.register("password")}
                 className="mt-3 w-full border-0 border-b-2 border-slate-300 bg-transparent px-0 pb-3 pt-1 outline-none transition-colors focus:border-brand-blue"
                 type="password"
               />
+              {form.formState.errors.password ? (
+                <p className="mt-1 text-sm font-medium text-red-600">{form.formState.errors.password.message}</p>
+              ) : null}
             </label>
 
             <p className="text-sm leading-6 text-slate-500">
