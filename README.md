@@ -2,17 +2,14 @@
 
 Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScript, Prisma, and PostgreSQL.
 
-## Implemented Scope
+## Features
 
-- Product listing with search and category filters
-- Product detail page with image gallery and specifications
-- Cart management with quantity updates and removal
-- Checkout flow with shipping form and order placement
-- Order confirmation and order history
-- Wishlist
-- Responsive desktop/tablet/mobile layout
-- Signup, login, and authenticated user sessions
-- Simulated email notification records on order placement
+- Product listing, search, categories, and filters
+- Product detail page (gallery, WOW DEAL, delivery details, key features/specs)
+- Cart + wishlist
+- Checkout + order placement + order history
+- Auth (signup/login) + protected routes
+- Email notifications via Gmail SMTP (signup, login alert, order confirmation)
 
 ## How It Works (High Level)
 
@@ -26,11 +23,50 @@ Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScri
 - Backend: Express, TypeScript, Prisma
 - Database: PostgreSQL
 
-## Project Structure
+## Folder Structure
 
-- `apps/frontend` React application
-- `apps/backend` Express API and Prisma schema
-- `packages/shared` shared package scaffold
+```txt
+ecommerce_platform/
+  ./
+    README.md
+    docker-compose.yml
+    package.json
+    package-lock.json
+  apps/
+    backend/
+      prisma/
+        schema.prisma
+        seed.ts
+        seed.from-db.ts
+        export-seed.ts
+        remove-banned-products.ts
+      src/
+        app/
+          server.ts
+        modules/
+          auth/
+          order/
+        shared/
+          mailer.ts
+      .env.example
+    frontend/
+      public/
+        favicon.svg
+      src/
+        pages/
+          home/
+          product-detail/
+          search-results/
+          checkout/
+        shared/
+          components/
+          styles/
+      .env.example
+  docs/
+    screenshots/  # assignment screenshots used in README
+  packages/
+    shared/     # shared types/helpers (scaffold)
+```
 
 ## Screenshots
 
@@ -41,6 +77,7 @@ Flipkart-inspired e-commerce platform built with React (Vite), Express, TypeScri
 ![Wishlist](docs/screenshots/wishlist.png)
 ![Login](docs/screenshots/login.png)
 ![Order history](docs/screenshots/order-history.png)
+![Email receipt](docs/screenshots/email-receipt.jpg)
 
 ## Setup & Run
 
@@ -104,11 +141,13 @@ npm run dev
 
 Open the app at `http://localhost:5173` and create an account using **Signup**.
 
-## Useful Commands
+## Seeding & DB Commands
 
-- `npm run lint` — lint all workspaces
-- `npm run build` — build all workspaces
-- `npm run prisma:clear` — clear DB tables (backend)
+- Clear all existing data (from repo root): `npm run prisma:clear`
+- Seed from the latest DB snapshot (from repo root): `npm run prisma:seed-from-db`
+- Same commands from backend folder:
+  - `cd apps/backend && npm run prisma:clear`
+  - `cd apps/backend && npm run prisma:seed-from-db`
 
 ## Environment
 
@@ -118,6 +157,11 @@ Backend (`apps/backend/.env`):
 PORT=4000
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/ecommerce_platform
 JWT_SECRET=replace_with_a_long_random_string
+
+# Email (Gmail app password)
+GMAIL_USER=yourgmail@gmail.com
+GMAIL_APP_PASSWORD=your_app_password
+MAIL_FROM="Flipkart Clone <yourgmail@gmail.com>"
 ```
 
 Frontend (`apps/frontend/.env`):
@@ -126,14 +170,8 @@ Frontend (`apps/frontend/.env`):
 VITE_API_URL=http://127.0.0.1:4000/api
 ```
 
-## Seeding Notes
+## Notes
 
 - The seed script clears existing rows in the main tables before inserting.
 - If `SEED_CSV_PATH` is not found, the seed falls back to an included snapshot dataset.
-- The dataset does not include inventory, so seed uses a consistent default stock quantity per product.
-- A small set of known-unwanted product names are excluded during seeding (see `apps/backend/prisma/seed.ts`).
-
-## Assumptions
-
-- Payments are simulated
-- Email notifications are represented as stored notification records instead of real email delivery
+- For Gmail SMTP on a VM, make sure outbound SMTP ports are allowed (typically `465`/`587`) and set the same env vars there.
