@@ -185,5 +185,5 @@ VITE_API_URL=http://127.0.0.1:4000/api
 
 ## Deployment
 
-- Frontend: _add your deployed link here_
-- Backend: _add your deployed link here_
+- **Frontend:** [https://e-commerce-platform-frontend-do7kdupol-naval1525s-projects.vercel.app/](https://e-commerce-platform-frontend-do7kdupol-naval1525s-projects.vercel.app/)
+- **Backend:** [http://api.bilio.in](http://api.bilio.in)
