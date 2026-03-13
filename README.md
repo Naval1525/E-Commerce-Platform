@@ -7,6 +7,27 @@ Flipkart‑inspired full‑stack e‑commerce platform built with **React (Vite)
 - Live Demo: https://e-commerce-platform-frontend.vercel.app/
 - Demo Video: _add your video link here_ (best: GitHub-uploaded `.mp4` link or YouTube)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/homepage.png" alt="Homepage" width="420" /></td>
+    <td><img src="docs/screenshots/product-search.png" alt="Search" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/product-detail.png" alt="Product detail" width="420" /></td>
+    <td><img src="docs/screenshots/checkout.png" alt="Checkout" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/wishlist.png" alt="Wishlist" width="420" /></td>
+    <td><img src="docs/screenshots/order-history.png" alt="Orders" width="420" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/login.png" alt="Login" width="420" /></td>
+    <td><img src="docs/screenshots/email.jpg" alt="Email receipt" width="420" /></td>
+  </tr>
+</table>
+
 ## What’s Implemented
 
 - Product listing (Flipkart‑style grid), search, and category filters
@@ -115,27 +136,6 @@ VITE_API_URL=http://127.0.0.1:4000/api
 - The seed script clears existing rows in the main tables before inserting.
 - If `SEED_CSV_PATH` is not found, the seed falls back to an included snapshot dataset.
 - For Gmail SMTP on a VM, make sure outbound SMTP ports are allowed (typically `465`/`587`) and set the same env vars there.
-
-## Screenshots
-
-<table>
-  <tr>
-    <td><img src="docs/screenshots/homepage.png" alt="Homepage" width="420" /></td>
-    <td><img src="docs/screenshots/product-search.png" alt="Search" width="420" /></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/product-detail.png" alt="Product detail" width="420" /></td>
-    <td><img src="docs/screenshots/checkout.png" alt="Checkout" width="420" /></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/wishlist.png" alt="Wishlist" width="420" /></td>
-    <td><img src="docs/screenshots/order-history.png" alt="Orders" width="420" /></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/login.png" alt="Login" width="420" /></td>
-    <td><img src="docs/screenshots/email.jpg" alt="Email receipt" width="420" /></td>
-  </tr>
-</table>
 
 ## Tech Stack
 
