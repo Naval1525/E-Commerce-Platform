@@ -4,8 +4,8 @@ Flipkart‑inspired full‑stack e‑commerce platform built with **React (Vite)
 
 ## Project Demo (Most Important)
 
-- Live Demo: _add your deployed link here_
-- Demo Video: _add your video link here_ (YouTube / Drive / Loom)
+- Live Demo: https://e-commerce-platform-frontend.vercel.app/
+- Demo Video: _add your video link here_ (best: GitHub-uploaded `.mp4` link or YouTube)
 
 ## What’s Implemented
 
